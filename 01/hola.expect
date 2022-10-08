@@ -1,0 +1,9 @@
+#!/usr/bin/expect
+
+set timeout -1
+spawn ./hello.bash
+# looking for text
+expect "How are you doing?\r"
+send -- "ok\r"
+expect eof
+
