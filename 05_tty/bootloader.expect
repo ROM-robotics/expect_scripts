@@ -1,0 +1,26 @@
+#!/usr/bin/expect -f
+
+# device
+set modem [lindex $argv 0]
+send_user "# ---> modem device: $modem\n"
+
+# keep it open
+exec sh -c "sleep 3 < $modem" &
+
+# serial port parameters
+exec stty -F $modem 115200 raw -clocal -echo -istrip -hup
+
+# connect
+send_user "#---> connecting to $modem\n"
+spawn -open [open $modem w+]
+
+send_user "#---> waiting for U-Boot command prompt\n"
+
+expect "Hit Ctrl+C key to stop autoboot:"
+send -- 0x3
+expect "1"
+for {set i 1} {$i < 10} {incr i 1} {
+send -- 0x3
+}
+
+interact
